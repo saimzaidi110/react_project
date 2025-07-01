@@ -3,8 +3,11 @@ const cors = require('cors');
 const UserController = require("./controllers/UserControlles");
 const UserRouter = require("./routes/UserRoutes")
 const ProductRoutes =require("./routes/ProductRoutes")
+const ConnectDB =require("./config/db.js")
+
 
 const app = express()
+ConnectDB();
 app.use(cors());
 
 

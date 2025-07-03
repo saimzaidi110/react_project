@@ -10,8 +10,6 @@ const app = express()
 ConnectDB();
 app.use(cors());
 
-
-
 //console.log(users);
 
 //product Array
@@ -26,12 +24,6 @@ app.get('/',(req,res)=>{
     //console.log("Hello World")
 
 })
-
-
-
-
-
-
 
 const port = 3000 || 5000
 app.listen(port, ()=>{

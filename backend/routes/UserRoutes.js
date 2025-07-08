@@ -7,5 +7,7 @@ const router = express.Router()
 router.get('/',UserController.getalluser)
 
 router.get('/:id',UserController.getsingleuser)
+router.post('/login',UserController.LoginUser)
+router.post('/signup',UserController.Signup)
 
 module.exports=router

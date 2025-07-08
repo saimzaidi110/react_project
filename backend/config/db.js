@@ -7,6 +7,4 @@ await mongoose.connect('mongodb+srv://admin:admin@cluster0.tdskrt4.mongodb.net/'
   .catch(() => console.log('Not Connected!'))
 }
 
-
-
 module.exports=ConnectDB

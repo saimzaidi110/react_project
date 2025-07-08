@@ -1,4 +1,7 @@
 // User Array
+const bcrypt = require('bcrypt');
+
+const UserSchema = require("../models/UserSchema");
 
 const users = [
   { id: 1, name: "Rahul Kumar", email: "rahul.kumar@example.com" },
@@ -16,20 +19,65 @@ const users = [
 
 //for all users
 let UserController = {
-    getalluser:(req,res)=>{
+  getalluser: (req, res) => {
     res.send(users)
-},
-//single users
+  },
+  //single users
 
-getsingleuser:(req,res)=>{
-    const{id}= req.params
-    const user = users.find( u => u.id ==id)
- if (user) {
-  res.send(user);
+  getsingleuser: (req, res) => {
+    const { id } = req.params
+    const user = users.find(u => u.id == id)
+    if (user) {
+      res.send(user);
+    }
+    else {
+      res.send({ message: "User not found" });
+    }
+  },
+
+  //loginuser
+
+  LoginUser: async (req, res) => {
+
+  },
+
+  Signup: async (req, res) => {
+    console.log(req.body)
+
+    const { username, email, password } = req.body
+    if (!username || !email || !password) {
+      res.json({
+        message: "required fields are missing",
+        status: false,
+      });
+    }
+    else {
+      const existinguser = await UserSchema.findOne({ email })
+
+      if (existinguser) {
+        res.json({
+          message: "User is already exist with this email",
+        status: false,
+
+        });
+      }
+      else {
+        const hashpassword=await bcrypt.hash(password,10)
+        let user = await UserSchema({ username, email, password:hashpassword })
+        await user.save()
+        res.json({
+          message: "SignUp Successfully",
+        status: true,
+        user
+        });
+
+      }
+
+      res.send();
+    }
+
+
+  }
 }
-else {
-  res.send({ message: "User not found" });
-}
-}
-}
-module.exports=UserController
+
+module.exports = UserController

@@ -9,6 +9,7 @@ const ConnectDB =require("./config/db.js")
 const app = express()
 ConnectDB();
 app.use(cors());
+app.use(express.json());
 
 //console.log(users);
 

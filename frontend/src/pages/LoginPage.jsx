@@ -1,45 +1,73 @@
-import React, { useContext, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import { UserContext } from '../context/UserContext'
+import { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { UserContext } from "../context/UserContext";
+import { useContext } from "react";
 
-export default function LoginPage() {
-    const {userlogin} = useContext(UserContext)
-    const [users, setUsers] = useState(JSON.parse(localStorage.getItem('users')) || [])
-    const navigate = useNavigate()
-    const emailRef = useRef()
-    const passwordRef = useRef()
+export default function SignupPage() {
+    const {userlogin }=useContext(UserContext)
+    const emailRef = useRef();
+    const passwordRef = useRef();
+    const navigate = useNavigate();
 
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const handlesubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        let email = emailRef.current.value
-        let password = passwordRef.current.value
-        let user = { email, password }
-        let finduser = users.find((x)=>x.email ===email)
-        //console.log(user)
-        console.log(finduser)
-        if (finduser){
-            if(finduser.password == password){
-                userlogin(finduser)
-                toast.success("Login SuccessFully")
-                  navigate('/dashboard')
-            }
-            else{
-                toast.error("Password does not matched")
-            }
-        }
-        else{
-            alert("Account does not exist Sign-up First")
+
+
+        const email = emailRef.current.value.trim();
+        const password = passwordRef.current.value.trim();
+
+        if (!email || !password) {
+            setError("All fields are required.");
+            return;
         }
 
-         
-        
-        // emailRef.current.value = ""
-        // passwordRef.current.value = ""
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await axios.post("http://localhost:3000/users/login", {
+
+                email,
+                password,
+            });
+
+            let { status, message, user } = response.data
+            if (status) {
+                console.log("Login success:", response.data);
+                toast.success(message)
+                userlogin(user);
+
+                // Navigate to login page or dashboard
+                navigate("/");
+
+            }
+            else {
+                toast.error(message)
+            }
+
+        } catch (err) {
+            console.error("Login error:", err);
+            if (err.response?.data?.message) {
+                setError(err.response.data.message);
+            } else {
+                setError("Something went wrong. Please try again.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
-    }
+    // emailRef.current.value = ""
+    // passwordRef.current.value = ""
+
+
+
     return (
         <div>
 
@@ -105,7 +133,7 @@ export default function LoginPage() {
                                         </div>
 
                                         <div>
-                                            <button onClick={handlesubmit} class="inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-md focus:outline-none hover:bg-blue-700 focus:bg-blue-700">
+                                            <button onClick={handleSubmit} class="inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-md focus:outline-none hover:bg-blue-700 focus:bg-blue-700">
                                                 Log in
                                             </button>
                                         </div>

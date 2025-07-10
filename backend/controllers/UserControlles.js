@@ -19,8 +19,21 @@ const users = [
 
 //for all users
 let UserController = {
-  getalluser: (req, res) => {
-    res.send(users)
+  getalluser:async (req, res) => {
+    try {
+      const users =await UserSchema.find({})
+      res.json({
+        message:"All users get successfully",
+        status:true,
+        users
+      })
+    } catch (error) {
+      res.json({
+        message:"Failed to get User",
+        status:false,
+        error
+      })
+    }
   },
   //single users
 
@@ -35,11 +48,6 @@ let UserController = {
     }
   },
 
-  //loginuser
-
-  LoginUser: async (req, res) => {
-
-  },
 
   Signup: async (req, res) => {
     console.log(req.body)
@@ -74,6 +82,47 @@ let UserController = {
       }
 
       res.send();
+    }
+
+
+  },
+
+  login: async (req, res) => {
+    console.log(req.body)
+
+    const { email, password } = req.body
+    if (!email || !password) {
+      res.json({
+        message: "Email and password is required",
+        status: false,
+      });
+    }
+    else {
+      const user = await UserSchema.findOne({ email })
+
+      if (!user) {
+        res.json({
+          message: "User not found with this email",
+        status: false,
+
+        });
+      }
+      else {
+       const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+        res.json({
+          message: "Invalid password",
+          status: false,
+        });
+      } else {
+        res.json({
+          message: "Login successful",
+          status: true,
+          user,
+        });
+      }
+    }
+
     }
 
 

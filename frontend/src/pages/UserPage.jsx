@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 export default function UserPage() {
 
   const [users, setUsers] = useState([])
@@ -12,6 +13,28 @@ export default function UserPage() {
       console.error(error);
     }
   }
+  const handleEdit = async (id)=>{
+    console.log(id);
+  }
+//deleteuser
+   const handleDelete = async (id)=>{
+    try {
+      const response = await axios.delete(`http://localhost:3000/users/${id}`);
+      let { status, message, user } = response.data
+      if(status){
+        toast.success(message)
+        getusers()
+      }
+      else{
+        toast.error(message)
+      }
+   
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
   useEffect(() => {
     getusers();
 
@@ -38,10 +61,10 @@ export default function UserPage() {
                   <td className="px-4 py-2 border-b">{user.username}</td>
                   <td className="px-4 py-2 border-b">{user.email}</td>
                   <td className="px-4 py-2 border-b">
-                    <button className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded mr-2">
+                    <button onClick={()=>handleEdit(user._id)} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded mr-2">
                       Edit
                     </button>
-                    <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+                    <button onClick={()=>handleDelete(user._id)} className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
                       Delete
                     </button>
                   </td>

@@ -1,20 +1,17 @@
 import React from "react";
 import Sidebar from "../component/sidebar";
 import Navbar from "../component/navbar";
-import Dashboard from "./dashboard";
-import ProfilePage from "./ProfilePage";
 import { Outlet } from "react-router-dom";
 
 function MainDashboard() {
   return (
-    <div className="flex h-screen">
+    <div className="flex">
       <Sidebar />
       
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col ml-64"> {/* ml-64 to offset fixed sidebar */}
         <Navbar />
-        <main className="flex-1 bg-gray-100">
-       
-         <Outlet/>
+        <main className="flex-1 bg-gray-100 overflow-y-auto h-screen">
+          <Outlet />
         </main>
       </div>
     </div>

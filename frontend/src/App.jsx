@@ -15,6 +15,7 @@ import SignupPage from "./pages/SignupPage"
 import { UserContext } from './context/UserContext'
 import UserPage from './pages/UserPage'
 import Productpages from './pages/Productpages'
+import CreateProduct from './pages/CreateProduct'
 function App() {
   const {user}= useContext(UserContext)
   const router = createBrowserRouter([
@@ -61,6 +62,10 @@ function App() {
          {
           path:'products',
           element: <Productpages/>
+        },
+         {
+          path:'createproducts',
+          element: <CreateProduct/>
         },
         {
           path: 'setting',

@@ -43,7 +43,14 @@ export default function SignupPage() {
                 userlogin(user);
 
                 // Navigate to login page or dashboard
-                navigate("/");
+                
+                if(user.role=="admin"){
+                    navigate('/dashboard')
+                }
+                
+                else{
+                    navigate("/");
+                }
 
             }
             else {

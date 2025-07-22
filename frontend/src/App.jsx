@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 import './App.css'
 import HomePage from './pages/HomePage'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import PremiumPage from './pages/PremiumPage'
 import BlogPage from './pages/BlogPage'
@@ -16,6 +16,7 @@ import { UserContext } from './context/UserContext'
 import UserPage from './pages/UserPage'
 import Productpages from './pages/Productpages'
 import CreateProduct from './pages/CreateProduct'
+
 function App() {
   const {user}= useContext(UserContext)
   const router = createBrowserRouter([
@@ -45,7 +46,7 @@ function App() {
     },
     {
       path: '/dashboard',
-      element: <MainDashboard />,
+      element: user.role=="admin" ?<MainDashboard />:<Navigate to={'/'}/>,
       children: [
         {
           path: '/dashboard',

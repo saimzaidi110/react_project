@@ -38,13 +38,13 @@ export default function SignupPage() {
 
             let { status, message, user } = response.data
             if (status) {
-                console.log("Login success:", response.data);
+                console.log("Login success:", user);
                 toast.success(message)
                 userlogin(user);
 
                 // Navigate to login page or dashboard
                 
-                if(user.role=="admin"){
+                if(user?.role=="admin"){
                     navigate('/dashboard')
                 }
                 

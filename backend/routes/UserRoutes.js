@@ -1,17 +1,20 @@
-const express = require("express")
-const UserController = require("../controllers/UserControlles") // double-check the filename spelling
-const router = express.Router()
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const UserController = require("../controllers/UserControlles");
+const router = express.Router();
 
-// users API's
-router.get('/', UserController.getalluser)
-router.post('/signup', UserController.Signup)
-router.post('/login', UserController.login)
-router.delete('/:id', UserController.deleteUser)
-
-// ✅ ADD THIS LINE
-router.put('/:id', UserController.updateUser)
+const SECRET = process.env.JWT_SECRET;
 
 
+// Core User APIs
+router.get('/', UserController.getalluser);
+router.post('/signup', UserController.Signup);
+router.post('/login', UserController.login);
+router.delete('/:id', UserController.deleteUser);
+router.put('/:id', UserController.updateUser);
+router.post("/logout", UserController.logoutUser);
 
 
-module.exports = router
+
+
+module.exports = router;

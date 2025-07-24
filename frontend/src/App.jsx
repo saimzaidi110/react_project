@@ -16,9 +16,11 @@ import { UserContext } from './context/UserContext'
 import UserPage from './pages/UserPage'
 import Productpages from './pages/Productpages'
 import CreateProduct from './pages/CreateProduct'
+import ProtectedRoute from './pages/ProtectedRoute.jsx';
+
 
 function App() {
-  const {user}= useContext(UserContext)
+  const { user } = useContext(UserContext)
   const router = createBrowserRouter([
     {
       path: '/',
@@ -46,7 +48,7 @@ function App() {
     },
     {
       path: '/dashboard',
-      element: user.role=="admin" ?<MainDashboard />:<Navigate to={'/'}/>,
+      element: user?.role == "admin" ? <MainDashboard /> : <Navigate to={'/'} />,
       children: [
         {
           path: '/dashboard',
@@ -57,16 +59,53 @@ function App() {
           element: <ProfilePage />
         },
         {
-          path:'users',
-          element: <UserPage/>
+          path: 'users',
+          element: <UserPage />
         },
-         {
-          path:'products',
-          element: <Productpages/>
+        {
+          path: 'products',
+          element: <Productpages />
         },
-         {
-          path:'createproducts',
-          element: <CreateProduct/>
+        {
+          path: 'createproducts',
+          element: <CreateProduct />
+        },
+        {
+          path: 'setting',
+          element: <SettingPage />
+        },
+        {
+          path: 'help',
+          element: <HelpPAge />
+        },
+      ]
+    }, {
+      path: '/dashboard',
+      element: (
+        <ProtectedRoute allowedRoles={['admin']}>
+          <MainDashboard />
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          path: '/dashboard',
+          element: <Dashboard />
+        },
+        {
+          path: 'profile',
+          element: <ProfilePage />
+        },
+        {
+          path: 'users',
+          element: <UserPage />
+        },
+        {
+          path: 'products',
+          element: <Productpages />
+        },
+        {
+          path: 'createproducts',
+          element: <CreateProduct />
         },
         {
           path: 'setting',
@@ -78,6 +117,7 @@ function App() {
         },
       ]
     },
+
   ])
 
   return (

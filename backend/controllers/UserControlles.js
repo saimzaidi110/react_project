@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const UserSchema = require("../models/UserSchema");
+const jwt = require('jsonwebtoken')
 
+const SECRET =process.env.JWT_SECRET
 let UserController = {
   getalluser: async (req, res) => {
     try {
@@ -46,38 +48,62 @@ let UserController = {
     });
   },
 
-  login: async (req, res) => {
-    const { email, password } = req.body
-    if (!email || !password) {
-      return res.json({
-        message: "Email and password is required",
-        status: false,
-      });
-    }
+login: async (req, res) => {
+  const { email, password } = req.body;
 
-    const user = await UserSchema.findOne({ email })
-    if (!user) {
-      return res.json({
-        message: "User not found with this email",
-        status: false,
-      });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.json({
-        message: "Invalid password",
-        status: false,
-      });
-    }
-
-    res.json({
-      message: "Login successful",
-      status: true,
-      user,
+  if (!email || !password) {
+    return res.json({
+      message: "Email and password are required",
+      status: false,
     });
-  },
+  }
 
+  const user = await UserSchema.findOne({ email });
+  if (!user) {
+    return res.json({
+      message: "User not found with this email",
+      status: false,
+    });
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.json({
+      message: "Invalid password",
+      status: false,
+    });
+  }
+
+  // ✅ Create token
+  const token = jwt.sign(
+    {
+      id: user._id,
+      email: user.email,
+      role: user.role || "user", // Add role if it exists
+    },
+    SECRET,
+    { expiresIn: "1d" }
+  );
+
+  // ✅ Set cookie
+  res.cookie("token", token, {
+    httpOnly: true,
+    sameSite: "Strict",
+    secure: false, // Use true in production (HTTPS)
+  });
+
+  // ✅ Return success (but not password!)
+  res.json({
+    message: "Login successful",
+    status: true,
+    user: {
+      id: user._id,
+      email: user.email,
+      username: user.username,
+      role: user.role || "user",
+    },
+  });
+},
   deleteUser: async (req, res) => {
     const { id } = req.params
     try {
@@ -128,7 +154,11 @@ let UserController = {
         error
       });
     }
-  }
+  },
+  logoutUser:  (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logout successful" });
+}
 }
 
 module.exports = UserController;
